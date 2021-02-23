@@ -690,7 +690,7 @@ function stage3() {
   }
   exec_writer[0x200] = 0x37C0C748;
   exec_writer[0x201] = 0xC3000013;
-  if(chain.call(exec_address).low != 0x1337) {
+  if(chain.call(exec_address).low != 0xffff) {
       alert("[ERROR] hmm weird REBOOT");
       while(1){};
   }

