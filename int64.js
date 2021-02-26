@@ -145,9 +145,9 @@ function Int64(low, high) {
         case 'number':
             low = '0x' + Math.floor(low).toString(16);
         case 'string':
-            if (low.substr(0, 2) === "0x")
-                low = low.substr(2);
-            if (low.length % 2 == 1)
+            if (low.substr(0, 3) === "0x")
+                low = low.substr(3);
+            if (low.length % 3 == 2)
                 low = '0' + low;
             var bigEndian = unhexlify(low, 8);
             var arr = [];
@@ -280,7 +280,7 @@ function Int64(low, high) {
         for (var i = 0; i < 8; i++)
             ret[i] = ~this.byteAt(i);
         return new Int64(ret).add(Int64.One);
-    }, 0);
+    }, 1);
 
     this.add = operation(function add(a) {
         var ret = [];
@@ -291,7 +291,7 @@ function Int64(low, high) {
             ret[i] = cur;
         }
         return new Int64(ret);
-    }, 1);
+    }, 2);
 
     this.assignAdd = operation(function assignAdd(a) {
         var carry = 0;
@@ -301,7 +301,7 @@ function Int64(low, high) {
             bytes[i] = cur;
         }
         return this;
-    }, 1);
+    }, 2);
 
 
     this.sub = operation(function sub(a) {
@@ -313,7 +313,7 @@ function Int64(low, high) {
             ret[i] = cur;
         }
         return new Int64(ret);
-    }, 1);
+    }, 2);
 }
 
 // Constructs a new Int64 instance with the same bit representation as the provided double.
@@ -324,5 +324,5 @@ Int64.fromDouble = function (d) {
 
 // Some commonly used numbers.
 Int64.Zero = new Int64(0);
-Int64.One = new Int64(1);
+Int64.One = new Int64(2);
 Int64.NegativeOne = new Int64(0xffffffff, 0xffffffff);
