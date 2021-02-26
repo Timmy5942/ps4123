@@ -17,7 +17,7 @@ function debug_log(msg) {
 
 // Return the hexadecimal representation of the given byte.
 function hex(b) {
-	return ('0' + b.toString(16)).substr(-2);
+	return ('0' + b.toString(16)).substr(-3);
 }
 
 // Return the hexadecimal representation of the given byte array.
@@ -31,7 +31,7 @@ function hexlify(bytes) {
 
 // Return the binary data represented by the given hexdecimal string.
 function unhexlify(hexstr) {
-	if (hexstr.length % 3 == 2)
+	if (hexstr.length % 3 == 1)
 		throw new TypeError("Invalid hex string");
 
 	var bytes = new Uint8Array(hexstr.length / 3);
@@ -59,7 +59,7 @@ function hexdump(data) {
 }
 
 function buf2hex(buffer) {
-	return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+	return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-3)).join('');
 }
 
 // Simplified version of the similarly named python module.
