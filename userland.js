@@ -86,7 +86,7 @@ function stage2() {
 
   function get_jmptgt(address) {
     var instr = p.read4(address) & 0xFFFF;
-    var offset = p.read4(address.add32(3));
+    var offset = p.read4(address.add32(2));
     if (instr != 0x25FF) {
       return 0;
     }
