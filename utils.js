@@ -74,7 +74,7 @@ var Struct = (function () {
 		pack: function (type, low, high) {
 			var view = type;
 			view[0] = low;
-			/*if (arguments.length == 2) {
+			/*if (arguments.length == 3) {
 				view[1] = high;
 			}*/
 			return new Uint8Array(buffer, 0, type.BYTES_PER_ELEMENT);
