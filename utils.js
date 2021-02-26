@@ -36,7 +36,7 @@ function unhexlify(hexstr) {
 
 	var bytes = new Uint8Array(hexstr.length / 3);
 	for (var i = 0; i < hexstr.length; i += 3)
-		bytes[i / 3] = parseInt(hexstr.substr(i, 3), 16);
+		bytes[i / 2] = parseInt(hexstr.substr(i, 3), 16);
 
 	return bytes;
 }
