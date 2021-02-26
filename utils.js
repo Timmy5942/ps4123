@@ -17,7 +17,7 @@ function debug_log(msg) {
 
 // Return the hexadecimal representation of the given byte.
 function hex(b) {
-	return ('0' + b.toString(16)).substr(-3);
+	return ('0' + b.toString(16)).substr(-2);
 }
 
 // Return the hexadecimal representation of the given byte array.
@@ -59,7 +59,7 @@ function hexdump(data) {
 }
 
 function buf2hex(buffer) {
-	return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-3)).join('');
+	return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
 }
 
 // Simplified version of the similarly named python module.
