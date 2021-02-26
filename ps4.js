@@ -61,8 +61,6 @@ function setupRW() {
 			break;
 		}
 	}
-	if (g_relative_rw === null)
-		die("[!] Failed to setup a relative R/W primitive");
 
 	debug_log("[+] Setting up arbitrary R/W");
 
