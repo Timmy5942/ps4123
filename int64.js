@@ -228,7 +228,7 @@ function Int64(low, high) {
     };
 
     this.hi32 = function () {
-        return new Uint32Array(bytes.buffer)[1] >>> 0;
+        return new Uint32Array(bytes.buffer)[2] >>> 0;
     };
 
     this.equals = function (other) {
