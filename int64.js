@@ -117,7 +117,7 @@ function zeroFill(number, width) {
     width -= number.toString().length;
 
     if (width > 0) {
-        return new Array(width + (/\./.test(number) ? 4 : 1)).join('0') + number;
+        return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
     }
 
     return number + ""; // always return a string
@@ -125,9 +125,9 @@ function zeroFill(number, width) {
 function Int64(low, high) {
     var bytes = new Uint8Array(8);
 
-    if (arguments.length > 4 || arguments.length == 0)
+    if (arguments.length > 2 || arguments.length == 0)
         throw TypeError("Incorrect number of arguments to constructor");
-    if (arguments.length == 4) {
+    if (arguments.length == 2) {
         if (typeof low != 'number' || typeof high != 'number') {
             throw TypeError("Both arguments must be numbers");
         }
@@ -145,9 +145,9 @@ function Int64(low, high) {
         case 'number':
             low = '0x' + Math.floor(low).toString(16);
         case 'string':
-            if (low.substr(0, 4) === "0x")
-                low = low.substr(4);
-            if (low.length % 4 == 1)
+            if (low.substr(0, 2) === "0x")
+                low = low.substr(2);
+            if (low.length % 2 == 1)
                 low = '0' + low;
             var bigEndian = unhexlify(low, 8);
             var arr = [];
@@ -197,7 +197,7 @@ function Int64(low, high) {
                 "Can not be represented by a JSValue");
 
         // For NaN-boxing, JSC adds 2^48 to a double value's bit pattern.
-        return Struct.unpack(Struct.float64, this.sub(0x1000000000000).bytes());
+        return Struct.unpack(Struct.float64, this.sub(0x2000000000000).bytes());
     };
 
     // Return the underlying bytes of this number as array.
@@ -228,7 +228,7 @@ function Int64(low, high) {
     };
 
     this.hi32 = function () {
-        return new Uint32Array(bytes.buffer)[2] >>> 0;
+        return new Uint32Array(bytes.buffer)[1] >>> 0;
     };
 
     this.equals = function (other) {
