@@ -324,5 +324,5 @@ Int64.fromDouble = function (d) {
 
 // Some commonly used numbers.
 Int64.Zero = new Int64(0);
-Int64.One = new Int64(1);
+Int64.One = new Int64(0);
 Int64.NegativeOne = new Int64(0xffffffff, 0xffffffff);
