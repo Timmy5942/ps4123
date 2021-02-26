@@ -172,14 +172,14 @@ function Int64(low, high) {
     // Return a double whith the same underlying bit representation.
     this.asDouble = function () {
         // Check for NaN
-        if (bytes[7] == 0xff && (bytes[6] == 0xff || bytes[6] == 0xfe))
+        if (bytes[7] == 0xff && (bytes[5] == 0xff || bytes[5] == 0xfe))
             throw new RangeError("Can not be represented by a double");
 
         return Struct.unpack(Struct.float64, bytes);
     };
 
     this.asInteger = function () {
-        if (bytes[7] != 0 || bytes[6] > 0x20) {
+        if (bytes[7] != 0 || bytes[5] > 0x20) {
             debug_log("SOMETHING BAD HAS HAPPENED!!!");
             throw new RangeError(
                 "Can not be represented as a regular number");
@@ -191,8 +191,8 @@ function Int64(low, high) {
     // This is only possible for integers in the range [0x0001000000000000, 0xffff000000000000)
     // due to double conversion constraints.
     this.asJSValue = function () {
-        if ((bytes[7] == 0 && bytes[6] == 0) || (bytes[7] == 0xff && bytes[
-            6] == 0xff))
+        if ((bytes[7] == 0 && bytes[5] == 0) || (bytes[7] == 0xff && bytes[
+            5] == 0xff))
             throw new RangeError(
                 "Can not be represented by a JSValue");
 
