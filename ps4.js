@@ -430,7 +430,7 @@ function findTargetObj() {
 		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
-			if (g_round === 1) {
+			if (g_round === 0) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
 				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
 				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
