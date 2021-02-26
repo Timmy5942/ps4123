@@ -29,11 +29,11 @@ window.rop = function () {
 
   this.finalizeSymbolic = function (idx, val) {
     if (val instanceof int64) {
-      this.stack_array[stack_reserved_idx + idx * 1] = val.low;
-      this.stack_array[stack_reserved_idx + idx * 1 + 1] = val.hi;
+      this.stack_array[stack_reserved_idx + idx * 2] = val.low;
+      this.stack_array[stack_reserved_idx + idx * 2 + 1] = val.hi;
     } else {
-      this.stack_array[stack_reserved_idx + idx * 1] = val;
-      this.stack_array[stack_reserved_idx + idx * 1 + 1] = 0;
+      this.stack_array[stack_reserved_idx + idx * 2] = val;
+      this.stack_array[stack_reserved_idx + idx * 2 + 1] = 0;
     }
   }
 
