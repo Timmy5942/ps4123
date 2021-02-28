@@ -157,15 +157,15 @@ function Int64(low, high) {
 
     this.neg = operation(function neg() {
         var ret = [];
-        for (var i = 0; i < 16; i++)
+        for (var i = 0; i < 7; i++)
             ret[i] = ~this.byteAt(i);
         return new Int64(ret).add(Int64.One);
-    }, 1);
+    }, 0);
 
     this.add = operation(function add(a) {
         var ret = [];
         var carry = 0;
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 7; i++) {
             var cur = this.byteAt(i) + a.byteAt(i) + carry;
             carry = cur > 0xff | 0;
             ret[i] = cur;
@@ -175,7 +175,7 @@ function Int64(low, high) {
 
     this.assignAdd = operation(function assignAdd(a) {
         var carry = 0;
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 7; i++) {
             var cur = this.byteAt(i) + a.byteAt(i) + carry;
             carry = cur > 0xff | 0;
             bytes[i] = cur;
@@ -187,7 +187,7 @@ function Int64(low, high) {
     this.sub = operation(function sub(a) {
         var ret = [];
         var carry = 0;
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 7; i++) {
             var cur = this.byteAt(i) - a.byteAt(i) - carry;
             carry = cur < 0 | 0;
             ret[i] = cur;
