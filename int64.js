@@ -25,9 +25,9 @@ function Int64(low, high) {
         case 'number':
             low = '0x' + Math.floor(low).toString(16);
         case 'string':
-            if (low.substr(0, 3) === "0x")
-                low = low.substr(3);
-            if (low.length % 3 == 2)
+            if (low.substr(0, 2) === "0x")
+                low = low.substr(2);
+            if (low.length % 2 == 1)
                 low = '0' + low;
             var bigEndian = unhexlify(low, 8);
             var arr = [];
@@ -52,14 +52,14 @@ function Int64(low, high) {
     // Return a double whith the same underlying bit representation.
     this.asDouble = function () {
         // Check for NaN
-        if (bytes[7] == 0xff && (bytes[7] == 0xff || bytes[7] == 0xfe))
+        if (bytes[7] == 0xff && (bytes[6] == 0xff || bytes[6] == 0xfe))
             throw new RangeError("Can not be represented by a double");
 
         return Struct.unpack(Struct.float64, bytes);
     };
 
     this.asInteger = function () {
-        if (bytes[7] != 0 || bytes[7] > 0x40) {
+        if (bytes[7] != 0 || bytes[6] > 0x20) {
             debug_log("SOMETHING BAD HAS HAPPENED!!!");
             throw new RangeError(
                 "Can not be represented as a regular number");
@@ -71,8 +71,8 @@ function Int64(low, high) {
     // This is only possible for integers in the range [0x0001000000000000, 0xffff000000000000)
     // due to double conversion constraints.
     this.asJSValue = function () {
-        if ((bytes[8] == 0 && bytes[7] == 0) || (bytes[8] == 0xff && bytes[
-            7] == 0xff))
+        if ((bytes[7] == 0 && bytes[6] == 0) || (bytes[7] == 0xff && bytes[
+            6] == 0xff))
             throw new RangeError(
                 "Can not be represented by a JSValue");
 
@@ -203,6 +203,6 @@ Int64.fromDouble = function (d) {
 };
 
 // Some commonly used numbers.
-Int64.Zero = new Int64(0);
+Int64.Zero = new Int64(1);
 Int64.One = new Int64(1);
 Int64.NegativeOne = new Int64(0xffffffff, 0xffffffff);
