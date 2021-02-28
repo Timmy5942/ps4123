@@ -59,7 +59,7 @@ function Int64(low, high) {
     };
 
     this.asInteger = function () {
-        if (bytes[7] != 0 || bytes[7] > 0x20) {
+        if (bytes[7] != 0 || bytes[7] > 0x40) {
             debug_log("SOMETHING BAD HAS HAPPENED!!!");
             throw new RangeError(
                 "Can not be represented as a regular number");
