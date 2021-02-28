@@ -117,7 +117,7 @@ function zeroFill(number, width) {
     width -= number.toString().length;
 
     if (width > 0) {
-        return new Array(width + (/\./.test(number) ? 1 : 1)).join('0') + number;
+        return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
     }
 
     return number + ""; // always return a string
@@ -125,9 +125,9 @@ function zeroFill(number, width) {
 function Int64(low, high) {
     var bytes = new Uint8Array(8);
 
-    if (arguments.length > 1 || arguments.length == 0)
+    if (arguments.length > 2 || arguments.length == 0)
         throw TypeError("Incorrect number of arguments to constructor");
-    if (arguments.length == 1) {
+    if (arguments.length == 2) {
         if (typeof low != 'number' || typeof high != 'number') {
             throw TypeError("Both arguments must be numbers");
         }
