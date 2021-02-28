@@ -157,10 +157,10 @@ function Int64(low, high) {
 
     this.neg = operation(function neg() {
         var ret = [];
-        for (var i = 0; i < 8; i++)
+        for (var i = 0; i < 16; i++)
             ret[i] = ~this.byteAt(i);
         return new Int64(ret).add(Int64.One);
-    }, 0);
+    }, 1);
 
     this.add = operation(function add(a) {
         var ret = [];
@@ -203,6 +203,6 @@ Int64.fromDouble = function (d) {
 };
 
 // Some commonly used numbers.
-Int64.Zero = new Int64(1);
+Int64.Zero = new Int64(0);
 Int64.One = new Int64(1);
 Int64.NegativeOne = new Int64(0xffffffff, 0xffffffff);
