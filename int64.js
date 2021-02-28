@@ -316,12 +316,6 @@ function Int64(low, high) {
     }, 1);
 }
 
-// Constructs a new Int64 instance with the same bit representation as the provided double.
-Int64.fromDouble = function (d) {
-    var bytes = Struct.pack(Struct.float64, d);
-    return new Int64(bytes);
-};
-
 // Some commonly used numbers.
 Int64.Zero = new Int64(0);
 Int64.One = new Int64(1);
