@@ -398,10 +398,10 @@ function reuseTargetObj() {
 		let ab = new ArrayBuffer(LENGTH_VALIDATION_MESSAGE);
 		let view = new Float64Array(ab);
 
-		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble1();   // m_bubble
-		view[4] = guess_htmltextarea_addr.asDouble2();   // m_bubble
-		view[5] = guess_htmltextarea_addr.asDouble3();   // m_bubble
+		view[0] = guess_htmltextarea_addr.asDouble1();   // m_element
+		view[3] = guess_htmltextarea_addr.asDouble2();   // m_bubble
+		view[4] = guess_htmltextarea_addr.asDouble3();   // m_bubble
+		view[5] = guess_htmltextarea_addr.asDouble4();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
