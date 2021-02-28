@@ -399,9 +399,9 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble1();   // m_bubble
-		view[4] = guess_htmltextarea_addr.asDouble2();   //
-		view[5] = guess_htmltextarea_addr.asDouble3();   //
+		view[3] = guess_htmltextarea_addr1.asDouble();   // m_bubble
+		view[4] = guess_htmltextarea_addr2.asDouble();   //
+		view[5] = guess_htmltextarea_addr3.asDouble();   //
 
 		g_arr_ab_1.push(view);
 	}
