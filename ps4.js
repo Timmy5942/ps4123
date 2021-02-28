@@ -43,7 +43,7 @@ var g_round = 1;
 var g_input = null;
 
 var guess_htmltextarea_addr = new Int64("0x20a505b48");
-var guess_htmltextarea_addr = new Int64("0x2076dfb80");
+var guess_htmltextarea_addr = new Int64("0x2076dfd80");
 var guess_htmltextarea_addr = new Int64("0x2076dfde0");
 
 var master_b = new Uint32Array(2);
