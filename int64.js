@@ -6,7 +6,7 @@ function int64(low, hi) {
     this.hi = (hi >>> 0);
 
     this.add32inplace = function (val) {
-        var new_lo = (((this.low >>> 0) + val) & 0xF00000000) >>> 0;
+        var new_lo = (((this.low >>> 0) + val) & 0xFFFFFFFF) >>> 0;
         var new_hi = (this.hi >>> 0);
 
         if (new_lo < this.low) {
@@ -18,7 +18,7 @@ function int64(low, hi) {
     }
 
     this.add32 = function (val) {
-        var new_lo = (((this.low >>> 0) + val) & 0x00000000) >>> 0;
+        var new_lo = (((this.low >>> 0) + val) & 0xFFFFFFFF) >>> 0;
         var new_hi = (this.hi >>> 0);
 
         if (new_lo < this.low) {
@@ -29,10 +29,10 @@ function int64(low, hi) {
     }
 
     this.sub32 = function (val) {
-        var new_lo = (((this.low >>> 0) - val) & 0x00000000) >>> 0;
+        var new_lo = (((this.low >>> 0) - val) & 0xFFFFFFFF) >>> 0;
         var new_hi = (this.hi >>> 0);
 
-        if (new_lo > (this.low) & 0x00000000) {
+        if (new_lo > (this.low) & 0xFFFFFFFF) {
             new_hi--;
         }
 
@@ -40,10 +40,10 @@ function int64(low, hi) {
     }
 
     this.add64 = function(val) {
-        var new_lo = (((this.low >>> 0) + val.low) & 0x00000000) >>> 0;
+        var new_lo = (((this.low >>> 0) + val.low) & 0xFFFFFFFF) >>> 0;
         var new_hi = (this.hi >>> 0);
 
-        if (new_lo > (this.low) & 0x00000000) {
+        if (new_lo > (this.low) & 0xFFFFFFFF) {
             new_hi++;
         }
         new_hi = (((new_hi >>> 0) + val.hi) & 0xFFFFFFFF) >>> 0;
@@ -117,7 +117,7 @@ function zeroFill(number, width) {
     width -= number.toString().length;
 
     if (width > 0) {
-        return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
+        return new Array(width + (/\./.test(number) ? 1 : 1)).join('0') + number;
     }
 
     return number + ""; // always return a string
@@ -125,9 +125,9 @@ function zeroFill(number, width) {
 function Int64(low, high) {
     var bytes = new Uint8Array(8);
 
-    if (arguments.length > 2 || arguments.length == 0)
+    if (arguments.length > 1 || arguments.length == 0)
         throw TypeError("Incorrect number of arguments to constructor");
-    if (arguments.length == 2) {
+    if (arguments.length == 1) {
         if (typeof low != 'number' || typeof high != 'number') {
             throw TypeError("Both arguments must be numbers");
         }
@@ -145,9 +145,9 @@ function Int64(low, high) {
         case 'number':
             low = '0x' + Math.floor(low).toString(16);
         case 'string':
-            if (low.substr(0, 2) === "0x")
-                low = low.substr(2);
-            if (low.length % 2 == 1)
+            if (low.substr(0, 1) === "0x")
+                low = low.substr(1);
+            if (low.length % 1 == 1)
                 low = '0' + low;
             var bigEndian = unhexlify(low, 8);
             var arr = [];
