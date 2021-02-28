@@ -145,9 +145,9 @@ function Int64(low, high) {
         case 'number':
             low = '0x' + Math.floor(low).toString(16);
         case 'string':
-            if (low.substr(0, 1) === "0x")
-                low = low.substr(1);
-            if (low.length % 1 == 1)
+            if (low.substr(0, 2) === "0x")
+                low = low.substr(2);
+            if (low.length % 2 == 1)
                 low = '0' + low;
             var bigEndian = unhexlify(low, 8);
             var arr = [];
