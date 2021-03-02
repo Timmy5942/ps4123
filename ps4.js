@@ -36,8 +36,8 @@ var g_message_body_leak = null;
 
 var g_obj_str = {};
 
-var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "1px";
-var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "2px";
+var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 3) + "1px";
+var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 3) + "2px";
 
 var g_round = 1;
 var g_input = null;
