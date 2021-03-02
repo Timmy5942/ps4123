@@ -39,7 +39,7 @@ var g_obj_str = {};
 var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 3) + "1px";
 var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 3) + "2px";
 
-var g_round = 1;
+var g_round = 2;
 var g_input = null;
 
 var guess_htmltextarea_addr = new Int64("0x2031b00d8");
