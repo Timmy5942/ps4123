@@ -3,7 +3,7 @@
 // Copyright (c) 2016 Samuel Groß
 
 function Int64(low, high) {
-    var bytes = new Uint8Array(16);
+    var bytes = new Uint8Array(8);
 
     if (arguments.length > 2 || arguments.length == 0)
         throw TypeError("Incorrect number of arguments to constructor");
@@ -14,22 +14,22 @@ function Int64(low, high) {
         if (low > 0xffffffff || high > 0xffffffff || low < 0 || high < 0) {
             throw RangeError("Both arguments must fit inside a uint32");
         }
-        low = low.toString(32);
-        for (let i = 0; i < 16 - low.length; i++) {
+        low = low.toString(16);
+        for (let i = 0; i < 8 - low.length; i++) {
             low = "0" + low;
         }
-        low = "0x" + high.toString(32) + low;
+        low = "0x" + high.toString(16) + low;
     }
 
     switch (typeof low) {
         case 'number':
-            low = '0x' + Math.floor(low).toString(32);
+            low = '0x' + Math.floor(low).toString(16);
         case 'string':
             if (low.substr(0, 2) === "0x")
                 low = low.substr(2);
             if (low.length % 2 == 1)
                 low = '0' + low;
-            var bigEndian = unhexlify(low, 16);
+            var bigEndian = unhexlify(low, 8);
             var arr = [];
             for (var i = 0; i < bigEndian.length; i++) {
                 arr[i] = bigEndian[i];
@@ -40,7 +40,7 @@ function Int64(low, high) {
             if (low instanceof Int64) {
                 bytes.set(low.bytes());
             } else {
-                if (low.length != 16)
+                if (low.length != 8)
                     throw TypeError("Array must have excactly 8 elements.");
                 bytes.set(low);
             }
@@ -115,7 +115,7 @@ function Int64(low, high) {
         if (!(other instanceof Int64)) {
             other = new Int64(other);
         }
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 8; i++) {
             if (bytes[i] != other.byteAt(i))
                 return false;
         }
@@ -157,7 +157,7 @@ function Int64(low, high) {
 
     this.neg = operation(function neg() {
         var ret = [];
-        for (var i = 0; i < 16; i++)
+        for (var i = 0; i < 8; i++)
             ret[i] = ~this.byteAt(i);
         return new Int64(ret).add(Int64.One);
     }, 0);
@@ -165,7 +165,7 @@ function Int64(low, high) {
     this.add = operation(function add(a) {
         var ret = [];
         var carry = 0;
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 8; i++) {
             var cur = this.byteAt(i) + a.byteAt(i) + carry;
             carry = cur > 0xff | 0;
             ret[i] = cur;
@@ -175,7 +175,7 @@ function Int64(low, high) {
 
     this.assignAdd = operation(function assignAdd(a) {
         var carry = 0;
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 8; i++) {
             var cur = this.byteAt(i) + a.byteAt(i) + carry;
             carry = cur > 0xff | 0;
             bytes[i] = cur;
@@ -187,7 +187,7 @@ function Int64(low, high) {
     this.sub = operation(function sub(a) {
         var ret = [];
         var carry = 0;
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 8; i++) {
             var cur = this.byteAt(i) - a.byteAt(i) - carry;
             carry = cur < 0 | 0;
             ret[i] = cur;
