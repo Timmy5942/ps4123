@@ -77,7 +77,7 @@ function Int64(low, high) {
                 "Can not be represented by a JSValue");
 
         // For NaN-boxing, JSC adds 2^48 to a double value's bit pattern.
-        return Struct.unpack(Struct.float64, this.sub(0xffff000000000).bytes());
+        return Struct.unpack(Struct.float64, this.sub(0x1000000000000).bytes());
     };
 
     // Return the underlying bytes of this number as array.
