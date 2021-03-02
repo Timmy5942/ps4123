@@ -335,7 +335,7 @@ function reuseTargetObj() {
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
 		view[2] = guess_htmltextarea_addr.asDouble1();   // m_bubble
-		view[2] = guess_htmltextarea_addr.asDouble2();
+		view[4] = guess_htmltextarea_addr.asDouble2();
 
 		g_arr_ab_1.push(view);
 	}
