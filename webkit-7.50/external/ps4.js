@@ -332,8 +332,8 @@ function reuseTargetObj() {
 		let ab = new ArrayBuffer(LENGTH_VALIDATION_MESSAGE);
 		let view = new Float64Array(ab);
 
-		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[1] = guess_htmltextarea_addr.asDouble();   // m_element
+		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
