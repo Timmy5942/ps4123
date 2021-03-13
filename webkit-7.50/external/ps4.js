@@ -23,6 +23,7 @@ var g_arr_ab_3 = [];
 
 var g_frames = [];
 
+var g_relative_read = null;
 var g_relative_rw = null;
 var g_ab_slave = null;
 var g_ab_index = null;
@@ -332,7 +333,7 @@ function reuseTargetObj() {
 		let view = new Float64Array(ab);
 
 		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[2] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
 
 		g_arr_ab_1.push(view);
 	}
