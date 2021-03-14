@@ -17,6 +17,7 @@ const SPRAY_STRINGIMPL = 0x1000;
 const NB_FRAMES = 0xfa0;
 const NB_REUSE = 0x8000;
 
+var g_arr_ab_1 = [];
 var g_arr_ab_2 = [];
 var g_arr_ab_3 = [];
 
