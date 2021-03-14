@@ -3,76 +3,6 @@
 <title>PS4 Jailbreak 6.72</title>
 <meta charset="utf-8"/>
 <body>
-<script>
-function jb_finished()
-{
-    if(main_ret == 179 || main_ret == 0)
-    {
-        alert("Jailbreak Complete!");
-    }
-    else
-        alert("Jailbreak failed! Reboot your PS4 and try again.");
-}
-
-function mira_finished()
-{
-    alert("You're all set!");
-}
-
-function SC(x)
-{
-    return '<script src="'+x+'.js"></scr'+'ipt>';
-}
-
-function MIRA(x)
-{
-    return SC('mira/'+x);
-}
-
-function load_mira()
-{
-    document.write(MIRA('mira')+MIRA('mira2')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function load_netcat()
-{
-    document.write(MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function load_backup()
-{
-    document.write(MIRA('mira')+MIRA('backup')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function disable_updates()
-{
-    document.write(MIRA('mira')+MIRA('disable-updates')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function load_dumper()
-{
-    document.write(MIRA('mira')+MIRA('dumper')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function enable_updates()
-{
-    document.write(MIRA('mira')+MIRA('enable-updates')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function load_ftp()
-{
-    document.write(MIRA('mira')+MIRA('ftp')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-
-}
-function load_mira_nohb()
-{
-    document.write(MIRA('mira')+MIRA('mira-nohb')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
-
-function load_dumpermod()
-{
-    document.write(MIRA('mira-dumper')+MIRA('dumper')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
-}
 </script>
 <script>function print(){}</script>
 <script src="common/exploit.js"></script>
@@ -81,14 +11,7 @@ function load_dumpermod()
 <script src="common/rop.js"></script>
 <script src="common/syscalls.js"></script>
 <script src="jb/c-code.js"></script>
-<script src="mira/app2usb.js"></script>
-<script src="mira/backup.js"></script>
-<script src="mira/disable-updates.js"></script>
-<script src="mira/dumper.js"></script>
-<script src="mira/enable-updates.js"></script>
-<script src="mira/ftp.js"></script>
 <script src="mira/mira-nohb.js"></script>
-<script src="mira/app2usb.bin"></script>
 <script>jb_finished();</script>
 <table align="center" style="width:500px;margin-top:150px;">
 <tr>
