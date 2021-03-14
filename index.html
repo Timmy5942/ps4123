@@ -1,55 +1,110 @@
 <html>
-<body onload="go()">
+<head>
+<title>PS4 Jailbreak 6.72</title>
+<meta charset="utf-8"/>
+<body>
 <script>
-function print(){}
-
-var scriptCode = '';
-
-function preloadScripts(lst)
+function jb_finished()
 {
-    for(var i = 0; i < lst.length; i++)
+    if(main_ret == 179 || main_ret == 0)
     {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', lst[i], false);
-        xhr.send('');
-        scriptCode += xhr.responseText + '\n';
-    }
-}
-
-function done()
-{
-    if(main_ret == 0 || main_ret == 179)
-    {
-        alert("You're all set!");
-        read_ptr_at(0);
+        alert("Jailbreak Complete!");
     }
     else
         alert("Jailbreak failed! Reboot your PS4 and try again.");
 }
 
-window.midExploit = function()
+function mira_finished()
 {
-    preloadScripts(['blob.js', 'jb.js', 'netcat.js'], go);
+    alert("You're all set!");
 }
 
-window.postExploit = function()
+function SC(x)
 {
-    setTimeout(function() //update the screen one last time...
-    {
-        eval.call(window, scriptCode);
-        done();
-    }, 100);
-};
+    return '<script src="'+x+'.js"></scr'+'ipt>';
+}
+
+function MIRA(x)
+{
+    return SC('mira/'+x);
+}
+
+function load_mira()
+{
+    document.write(MIRA('mira')+MIRA('mira2')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function load_netcat()
+{
+    document.write(MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function load_backup()
+{
+    document.write(MIRA('mira')+MIRA('backup')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function disable_updates()
+{
+    document.write(MIRA('mira')+MIRA('disable-updates')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function load_dumper()
+{
+    document.write(MIRA('mira')+MIRA('dumper')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function enable_updates()
+{
+    document.write(MIRA('mira')+MIRA('enable-updates')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function load_ftp()
+{
+    document.write(MIRA('mira')+MIRA('ftp')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+
+}
+function load_mira_nohb()
+{
+    document.write(MIRA('mira')+MIRA('mira-nohb')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
+
+function load_dumpermod()
+{
+    document.write(MIRA('mira-dumper')+MIRA('dumper')+MIRA('c-code')+'<script>mira_finished();</scr'+'ipt>');
+}
 </script>
-<script src="webkit-7.50/external/utils.js"></script>
-<script src="webkit-7.50/external/int64.js"></script>
-<script src="webkit-7.50/external/ps4.js"></script>
-<script src="c-code.js"></script>
-<button id="input1" onfocus="handle2()"></button>
-<button id="input2"></button>
-<button id="input3" onfocus="handle2()"></button>
-<select id="select1">
-<option value="value1">Value1</option>
-</select>
+<script>function print(){}</script>
+<script src="common/exploit.js"></script>
+<script src="common/helpers.js"></script>
+<script src="common/malloc.js"></script>
+<script src="common/rop.js"></script>
+<script src="common/syscalls.js"></script>
+<script src="jb/c-code.js"></script>
+<script src="mira/app2usb.js"></script>
+<script src="mira/backup.js"></script>
+<script src="mira/disable-updates.js"></script>
+<script src="mira/dumper.js"></script>
+<script src="mira/enable-updates.js"></script>
+<script src="mira/ftp.js"></script>
+<script src="mira/mira-nohb.js"></script>
+<script src="mira/mira-dumper.js"></script>
+<script>jb_finished();</script>
+<table align="center" style="width:500px;margin-top:150px;">
+<tr>
+<td width="25%"><a href="#" onclick="load_mira(); return false">MIRA</a></td>
+<td width="25%"><a href="#" onclick="load_netcat(); return false">NETCAT</a></td>
+<td width="25%"><a href="#" onclick="load_backup(); return false">BACKUP</a></td>
+<td width="25%"><a href="#" onclick="disable_updates(); return false">DISABLE UPDATES</a></td>
+</tr
+<tr>
+<td width="25%"><a href="#" onclick="load_dumper(); return false">DUMPER</a></td>
+<td width="25%"><a href="#" onclick="enable_updates(); return false">ENABLE UPDATES</a></td>
+<td width="25%"><a href="#" onclick="load_ftp(); return false">FTP</a></td>
+<td width="25%"><a href="#" onclick="load_mira_nohb(); return false">MIRA (NO HB)</a></td>
+</tr>
+<tr>
+<td width="25%"><a href="#" onclick="load_dumpermod(); return false">DUMPER (MOD)</a></td>
+</table>
 </body>
 </html>
